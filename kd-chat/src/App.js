@@ -1,7 +1,10 @@
 import * as React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { ThemeProvider, CssBaseline, TextField, InputAdornment, IconButton, Box, LinearProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+
+import catPop from './cat-pop.gif';
+import catSilent from './cat-silent.gif';
 
 import { appTheme } from "./themes/theme.js";
 import './App.css';
@@ -10,6 +13,7 @@ function App() {
   const [prompt, setPrompt] = React.useState("");
   const [loadingResponse, setLoadingResponse] = React.useState(false);
   const [chat, setChat] = React.useState([]);
+  const [catTalking, setCatTalking] = React.useState(false);
 
   const AlwaysScrollToBottom = () => {
     const elementRef = React.useRef();
@@ -43,7 +47,10 @@ function App() {
       reader.read().then(function processText({ done, value }) {
         if (done) {
           console.log('Stream complete');
+          setCatTalking(false);
           return;
+        } else {
+          setCatTalking(true);
         }
 
         buffer += decoder.decode(value, { stream: true });
@@ -64,6 +71,10 @@ function App() {
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme />
       <div className="App">
+        <Box sx={{ position: "absolute", bottom: 110, left: 40 }}>
+        {catTalking && <img src={catPop} alt="Cat Talking" style={{width: '100px', height: 'auto'}} />}
+          {!catTalking && <img src={catSilent} alt="Cat Silent" style={{width: '100px', height: 'auto'}} />}
+        </Box>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Box sx={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', width: '80%', marginTop: 6}}>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
