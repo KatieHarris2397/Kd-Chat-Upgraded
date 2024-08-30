@@ -20,7 +20,7 @@ app.get('/api/llm-model', (req,res) => {
                 method: 'post',
                 url: "http://" + process.env.REACT_APP_API_URL + 'v1/chat/completions', //req.query.apiURL + 'v1/chat/completions',
                 withCredentials: false,
-                timeout: 100000,
+                //timeout: 100000,
                 data: {
                   model: req.query.model,
                   messages: [{
@@ -43,7 +43,7 @@ app.get('/api/llm-model', (req,res) => {
                 url: "http://" + process.env.REACT_APP_API_URL + '/api/generate', //req.query.apiURL + '/api/generate',
                 withCredentials: false,
                 responseType: 'stream',
-                timeout: 100000,
+                //timeout: 100000,
                 data: {
                   model: req.query.model,
                   prompt: req.query.prompt,

@@ -14,6 +14,10 @@ function App() {
   const [loadingResponse, setLoadingResponse] = React.useState(false);
   const [chat, setChat] = React.useState([]);
   const [catTalking, setCatTalking] = React.useState(false);
+  const [imageStyle, setImageStyle] = React.useState({ width: '100px', height: 'auto' });
+  const [imagePos, setImagePos] = React.useState({ position: "absolute", bottom: 110, left: 40 });
+  const [fontSize, setFontSize] = React.useState('16px');
+  const [textFieldHeight, setTextFieldHeight] = React.useState(22.5);
 
   const AlwaysScrollToBottom = () => {
     const elementRef = React.useRef();
@@ -67,23 +71,51 @@ function App() {
     setPrompt("");
   }
 
+  React.useEffect(() => {
+    const updateImageStyle = () => {
+      setImageStyle({ width: `${Math.ceil(window.innerWidth * 0.0643)}px`, height: 'auto' });
+      setImagePos({ position: "absolute", bottom: Math.ceil((window.innerHeight * 0.1142)), left: Math.ceil(window.innerWidth * 0.0257) });
+    };
+
+    const updateFontSize = () => {
+      setFontSize(window.innerWidth < 615 ? `${Math.ceil(window.innerWidth * 0.026)}px` : '16px');
+    };
+
+    const updateTextFieldHeight = () => {
+      setTextFieldHeight(window.innerWidth < 615 ? Math.ceil(Math.ceil(window.innerWidth * 0.0366) * 10) / 10 : 22.5);
+    };
+
+    window.addEventListener('resize', updateImageStyle);
+    window.addEventListener('resize', updateFontSize);
+    window.addEventListener('resize', updateTextFieldHeight);
+    updateImageStyle(); // Set the initial size
+    updateFontSize(); // Set the initial font size
+    updateTextFieldHeight(); // Set the initial text field height
+
+    return () => {
+      window.removeEventListener('resize', updateImageStyle);
+      window.removeEventListener('resize', updateFontSize);
+      window.removeEventListener('resize', updateTextFieldHeight);
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme />
       <div className="App">
-        <Box sx={{ position: "absolute", bottom: 110, left: 40 }}>
-        {catTalking && <img src={catPop} alt="Cat Talking" style={{width: '100px', height: 'auto'}} />}
-          {!catTalking && <img src={catSilent} alt="Cat Silent" style={{width: '100px', height: 'auto'}} />}
+        <Box sx={imagePos}>
+        {catTalking && <img src={catPop} alt="Cat Talking" style={imageStyle} />}
+          {!catTalking && <img src={catSilent} alt="Cat Silent" style={imageStyle} />}
         </Box>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
           <Box sx={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', width: '80%', marginTop: 6}}>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-              <p className='header'>LLM Provider:</p>
-              <p className='text'>Ollama</p>
+              <p className='header' style={{ fontSize: fontSize }}>LLM Provider:</p>
+              <p className='text' style={{ fontSize: fontSize }}>Ollama</p>
             </Box>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-              <p className='header'>LLM Model:</p>
-              <p className='text'>dolphin-phi</p>
+              <p className='header' style={{ fontSize: fontSize }}>LLM Model:</p>
+              <p className='text' style={{ fontSize: fontSize }}>dolphin-phi</p>
             </Box>
           </Box>
         </Box>
@@ -112,7 +144,8 @@ function App() {
                 padding: 1.5,
                 backgroundColor: item.type == "prompt" ? 'teal' : 'indigo',
                 borderRadius: 5,
-                maxWidth: '50%'
+                maxWidth: '70%',
+                fontSize: fontSize
               }}
             >
                 {item.text}
@@ -130,7 +163,9 @@ function App() {
               autoComplete='off'
               variant="outlined" 
               color="primary" 
-              sx={{width: '100%', marginTop: 'auto'}}
+              inputProps={{ style: { fontSize: fontSize, height: textFieldHeight } }} 
+              InputLabelProps={{ style: { fontSize: fontSize } }}
+              sx={{ width: '100%', marginTop: 'auto' }}
               onChange={(e) => setPrompt(e.target.value)}
               InputProps={{
                 endAdornment: (
@@ -142,7 +177,7 @@ function App() {
                       }}
                       edge="end"
                     >
-                      <SendIcon />
+                      <SendIcon sx={{ fontSize: fontSize }} />
                     </IconButton>
                   </InputAdornment>
                 )
