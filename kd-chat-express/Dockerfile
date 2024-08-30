@@ -1,5 +1,8 @@
 FROM node:alpine
 
+ENV REACT_APP_API_URL=http://localhost:11434
+ENV NODE_ENV=production
+
 WORKDIR /app
 
 COPY package.json .

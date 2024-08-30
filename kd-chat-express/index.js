@@ -18,7 +18,7 @@ app.get('/api/llm-model', (req,res) => {
         if (req.query.llmProvider == "localai"){
             axios({
                 method: 'post',
-                url: "http://" + process.env.REACT_APP_API_URL + 'v1/chat/completions', //req.query.apiURL + 'v1/chat/completions',
+                url: process.env.REACT_APP_API_URL + 'v1/chat/completions', //req.query.apiURL + 'v1/chat/completions',
                 withCredentials: false,
                 //timeout: 100000,
                 data: {
@@ -40,7 +40,7 @@ app.get('/api/llm-model', (req,res) => {
         } else if (req.query.llmProvider == "ollama"){
             axios({
                 method: 'post',
-                url: "http://" + process.env.REACT_APP_API_URL + '/api/generate', //req.query.apiURL + '/api/generate',
+                url: process.env.REACT_APP_API_URL + '/api/generate', //req.query.apiURL + '/api/generate',
                 withCredentials: false,
                 responseType: 'stream',
                 //timeout: 100000,
