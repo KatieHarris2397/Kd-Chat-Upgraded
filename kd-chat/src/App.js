@@ -28,7 +28,7 @@ function App() {
   function sendPrompt(prompt) {
     // Add prompt to UI
     var currentChat = chat;
-    var currentChat = [...currentChat, {"text": prompt, "type": "prompt"}]
+    currentChat = [...currentChat, {"text": prompt, "type": "prompt"}]
     setChat(currentChat)
 
     setLoadingResponse(true);
