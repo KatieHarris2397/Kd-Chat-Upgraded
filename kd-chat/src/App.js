@@ -137,12 +137,12 @@ function App() {
             <Box 
               key={index} 
               sx={{
-                marginLeft: item.type == "prompt" ? 'auto' : 1, 
-                marginRight: item.type == "prompt" ? 1 : 'auto', 
+                marginLeft: item.type === "prompt" ? 'auto' : 1, 
+                marginRight: item.type === "prompt" ? 1 : 'auto', 
                 marginTop: 1,
                 marginBottom: 1,
                 padding: 1.5,
-                backgroundColor: item.type == "prompt" ? 'teal' : 'indigo',
+                backgroundColor: item.type === "prompt" ? 'teal' : 'indigo',
                 borderRadius: 5,
                 maxWidth: '70%',
                 fontSize: fontSize
