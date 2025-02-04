@@ -1,0 +1,53 @@
+name: Build and Push Kd-Chat Docker Image to GHCR (initialization purposes only)
+
+on:
+  workflow_dispatch:  # Allows the workflow to be triggered manually from the GitHub UI
+
+jobs:
+  build-and-push-init:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write  # Required to push images to GHCR
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      # Step 2: Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      # Step 3: Convert repository owner to lowercase (docker image names must all be lowercase)
+      - name: Set repository owner lowercase
+        id: owner_lowercase
+        run: echo "owner_lowercase=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # Step 4: Build the Kd-Chat React app
+      - name: Install and Build React App
+        run: |
+          cd kd-chat
+          npm ci # Install dependencies (prefer ci for CI environments)
+          npm run build # Build the React app
+          cd ../ # Return to home directory
+
+      # Step 5: Replace build folder in kd-chat-express folder
+      - name: Replace build Folder in kd-chat-express Folder
+        run: |
+          cd kd-chat-express
+          rm -rf build
+          cd ../kd-chat
+          mv build ../kd-chat-express
+          cd ../ # Return to home directory
+          
+      # Step 6: Build and Push Kd-Chat Docker Image
+      - name: Build and Push Kd-Chat App Image
+        run: |
+          docker build --platform linux/amd64 -t ghcr.io/${{ env.owner_lowercase }}/kd-chat:v0.0.1 kd-chat-express
+          docker push ghcr.io/${{ env.owner_lowercase }}/kd-chat:v0.0.1
