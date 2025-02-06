@@ -13,6 +13,29 @@ const PORT = 3000;
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
+app.get('/api/healthcheck', (req,res) => {
+    try {
+        axios({
+            method: 'get',
+            url: process.env.REACT_APP_API_URL,
+        })
+        .then((response) => {
+            if (response.data === 'Ollama is running') {
+                res.send('Healthy')
+            } else {
+                res.send('Unhealthy')
+            }
+        })
+        .catch(err=>{
+            console.error(err.response)
+            res.sendStatus(400)
+        })
+    } catch(e) {
+        console.error(e)
+        res.sendStatus(500)
+    }
+});
+
 app.get('/api/llm-model', (req,res) => {
     try {
         if (req.query.llmProvider == "localai"){

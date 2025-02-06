@@ -1,0 +1,25 @@
+.App {
+  position:fixed;
+  padding:0;
+  margin:0;
+
+  top:0;
+  left:0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #282c34;
+  overflow: auto;
+}
+
+.header {
+  font-size: large;
+  color: #009688;
+  margin-right: 5px;
+}
+
+.text {
+  font-size: medium;
+}
+

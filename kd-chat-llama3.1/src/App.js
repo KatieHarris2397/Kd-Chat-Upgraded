@@ -1,20 +1,24 @@
 import * as React from 'react';
 // import axios from 'axios';
-import { ThemeProvider, CssBaseline, TextField, InputAdornment, IconButton, Box, LinearProgress } from '@mui/material';
+import { ThemeProvider, CssBaseline, TextField, InputAdornment, IconButton, Box, LinearProgress, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
 import catPop from './cat-pop.gif';
 import catSilent from './cat-silent.gif';
+import deepseek from './deepseek.png';
 
 import { appTheme } from "./themes/theme.js";
 import './App.css';
 
 function App() {
+  const [modelIsLoaded, setModelIsLoaded] = React.useState(false);
+  const [model, setModel] = React.useState('8b');
   const [prompt, setPrompt] = React.useState("");
   const [loadingResponse, setLoadingResponse] = React.useState(false);
   const [chat, setChat] = React.useState([]);
   const [catTalking, setCatTalking] = React.useState(false);
   const [imageStyle, setImageStyle] = React.useState({ width: '100px', height: 'auto' });
+  const [modelStyle, setModelStyle] = React.useState({ width: '30px', height: 'auto' });
   const [imagePos, setImagePos] = React.useState({ position: "absolute", bottom: 110, left: 40 });
   const [fontSize, setFontSize] = React.useState('16px');
   const [textFieldHeight, setTextFieldHeight] = React.useState(22.5);
@@ -25,6 +29,10 @@ function App() {
     return <div ref={elementRef} />;
   };
 
+  const handleChange = (event) => {
+    setModel(event.target.value);
+  };
+
   function sendPrompt(prompt) {
     // Add prompt to UI
     var currentChat = chat;
@@ -33,7 +41,7 @@ function App() {
 
     setLoadingResponse(true);
 
-    const url = '/api/llm-model?llmProvider=ollama&model=dolphin-phi&prompt=' + prompt;
+    const url = `/api/llm-model?llmProvider=ollama&model=llama3.1:${model}&prompt=` + prompt;
     const requestOptions = {
       method: 'GET',
       timeout: 100000
@@ -72,8 +80,27 @@ function App() {
   }
 
   React.useEffect(() => {
+    const checkEndpoint = async () => {
+      try {
+        const response = await fetch('http://localhost:11434/api/version');
+        if (response.ok) {
+          setModelIsLoaded(true);
+        } else {
+          throw new Error('Endpoint not ready');
+        }
+      } catch (error) {
+        console.log('Endpoint not ready, retrying...');
+        setTimeout(checkEndpoint, 5000); // Retry after 5 seconds
+      }
+    };
+
+    checkEndpoint();
+  }, []);
+
+  React.useEffect(() => {
     const updateImageStyle = () => {
       setImageStyle({ width: `${Math.ceil(window.innerWidth * 0.0643)}px`, height: 'auto' });
+      setModelStyle({ width: `${Math.ceil(window.innerWidth * 0.0366)}px`, height: 'auto' });
       setImagePos({ position: "absolute", bottom: Math.ceil((window.innerHeight * 0.1142)), left: Math.ceil(window.innerWidth * 0.0257) });
     };
 
@@ -99,6 +126,20 @@ function App() {
     }
   }, []);
 
+  if (!modelIsLoaded) {
+    return (
+      <ThemeProvider theme={appTheme}>
+        <CssBaseline enableColorScheme />
+        <div className="App">
+          <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+            <h1>Loading...</h1>
+            <p>Please wait while we connect to the model</p>
+          </Box>
+        </div>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline enableColorScheme />
@@ -108,14 +149,36 @@ function App() {
           {!catTalking && <img src={catSilent} alt="Cat Silent" style={imageStyle} />}
         </Box>
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
-          <Box sx={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', width: '80%', marginTop: 6}}>
+          <Box sx={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', width: '80%'}}>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
               <p className='header' style={{ fontSize: fontSize }}>LLM Provider:</p>
               <p className='text' style={{ fontSize: fontSize }}>Ollama</p>
             </Box>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-              <p className='header' style={{ fontSize: fontSize }}>LLM Model:</p>
-              <p className='text' style={{ fontSize: fontSize }}>dolphin-phi</p>
+              <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 2.5}}>
+                <img src={deepseek} alt="Model Image" style={modelStyle} />
+              </Box>
+              <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'right', paddingLeft: 1, marginBottom: 0}}>
+                <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                  <p className='header' style={{ fontSize: fontSize }}>LLM Model:</p>
+                  <p className='text' style={{ fontSize: fontSize }}>deepseek-r1</p>
+                </Box>
+                <Box sx={{marginTop: 0}}>
+                  <FormControl variant="standard" fullWidth size="small">
+                    <Select
+                      labelId="model-dropdown"
+                      id="model-propdown-id"
+                      value={model}
+                      label='model type'
+                      onChange={handleChange}
+                    >
+                      <MenuItem value='8b'>8b</MenuItem>
+                      <MenuItem value='70b'>70b</MenuItem>
+                      <MenuItem value='405b'>405b</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Box>
             </Box>
           </Box>
         </Box>
