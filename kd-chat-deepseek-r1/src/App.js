@@ -83,7 +83,7 @@ function App() {
     const checkEndpoint = async () => {
       try {
         const response = await fetch('/api/healthcheck');
-        if (response.ok && response.data === 'Healthy') {
+        if (response.ok && response.text() === 'Healthy') {
           setModelIsLoaded(true);
         } else {
           throw new Error('Endpoint not ready');
