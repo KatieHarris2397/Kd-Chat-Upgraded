@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 import catPop from './cat-pop.gif';
 import catSilent from './cat-silent.gif';
-import llama3 from './llama-3.3.png';
+import meta from './meta.png';
 
 import { appTheme } from "./themes/theme.js";
 import './App.css';
@@ -156,7 +156,7 @@ function App() {
             </Box>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
               <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 2.5}}>
-                <img src={llama3} alt="Model Image" style={modelStyle} />
+                <img src={meta} alt="Model Image" style={modelStyle} />
               </Box>
               <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'right', paddingLeft: 1, marginBottom: 0}}>
                 <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>

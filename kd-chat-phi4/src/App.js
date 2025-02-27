@@ -5,14 +5,14 @@ import SendIcon from '@mui/icons-material/Send';
 
 import catPop from './cat-pop.gif';
 import catSilent from './cat-silent.gif';
-import meta from './meta.png';
+import microsoft from './microsoft.png';
 
 import { appTheme } from "./themes/theme.js";
 import './App.css';
 
 function App() {
   const [modelIsLoaded, setModelIsLoaded] = React.useState(false);
-  const [model, setModel] = React.useState('8b');
+  const [model, setModel] = React.useState('14b');
   const [prompt, setPrompt] = React.useState("");
   const [loadingResponse, setLoadingResponse] = React.useState(false);
   const [chat, setChat] = React.useState([]);
@@ -41,7 +41,7 @@ function App() {
 
     setLoadingResponse(true);
 
-    const url = `/api/llm-model?llmProvider=ollama&model=llama3.1:${model}&prompt=` + prompt;
+    const url = '/api/llm-model?llmProvider=ollama&model=llama3.3&prompt=' + prompt;
     const requestOptions = {
       method: 'GET',
       timeout: 100000
@@ -156,12 +156,12 @@ function App() {
             </Box>
             <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
               <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 2.5}}>
-                <img src={meta} alt="Model Image" style={modelStyle} />
+                <img src={microsoft} alt="Model Image" style={modelStyle} />
               </Box>
               <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'right', paddingLeft: 1, marginBottom: 0}}>
                 <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                   <p className='header' style={{ fontSize: fontSize }}>LLM Model:</p>
-                  <p className='text' style={{ fontSize: fontSize }}>deepseek-r1</p>
+                  <p className='text' style={{ fontSize: fontSize }}>Phi4</p>
                 </Box>
                 <Box sx={{marginTop: 0}}>
                   <FormControl variant="standard" fullWidth size="small">
@@ -172,7 +172,7 @@ function App() {
                       label='model type'
                       onChange={handleChange}
                     >
-                      <MenuItem value='8b'>8b</MenuItem>
+                      <MenuItem value='14b'>14b</MenuItem>
                     </Select>
                   </FormControl>
                 </Box>

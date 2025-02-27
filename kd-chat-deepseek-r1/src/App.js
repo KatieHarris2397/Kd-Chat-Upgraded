@@ -174,11 +174,6 @@ function App() {
                       onChange={handleChange}
                     >
                       <MenuItem value='1.5b'>1.5b</MenuItem>
-                      <MenuItem value='7b'>7b</MenuItem>
-                      <MenuItem value='8b'>8b</MenuItem>
-                      <MenuItem value='14b'>14b</MenuItem>
-                      <MenuItem value='70b'>70b</MenuItem>
-                      <MenuItem value='671b'>671b</MenuItem>
                     </Select>
                   </FormControl>
                 </Box>
